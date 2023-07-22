@@ -86,3 +86,24 @@ func (*PrefixExpression) expressionNode() {
 }
 
 var _ Expression = (*PrefixExpression)(nil)
+
+type BooleanLiteral struct {
+	Token token.Token
+	Value bool
+}
+
+// String implements Expression
+func (n *BooleanLiteral) String() string {
+	return n.Token.Literal
+}
+
+// TokenLiteral implements Expression
+func (n *BooleanLiteral) TokenLiteral() string {
+	return n.Token.Literal
+}
+
+// expressionNode implements Expression
+func (*BooleanLiteral) expressionNode() {
+}
+
+var _ Expression = (*BooleanLiteral)(nil)

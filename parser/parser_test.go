@@ -1,10 +1,12 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/indeedhat/monkey-lang/ast"
 	"github.com/indeedhat/monkey-lang/lexer"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -36,4 +38,65 @@ func checkParserErrors(t *testing.T, p *Parser) {
 	}
 
 	t.FailNow()
+}
+
+func testIntegerLiteral(t *testing.T, expr ast.Expression, expected int64) {
+	lit, ok := expr.(*ast.IntegerLiteral)
+	if !ok {
+		t.Fatalf("bad expression type: expect(*ast.IntegerLiteral) found(%T)", expr)
+	}
+
+	assert.Equal(t, expected, lit.Value, "lit.Value")
+	assert.Equal(t, fmt.Sprint(expected), lit.TokenLiteral(), "lit.TokenLiteral()")
+}
+
+func testBooleanLiteral(t *testing.T, expr ast.Expression, expected bool) {
+	lit, ok := expr.(*ast.BooleanLiteral)
+	if !ok {
+		t.Fatalf("bad expression type: expect(*ast.BooleanLiteral) found(%T)", expr)
+	}
+
+	stringBool := "false"
+	if expected {
+		stringBool = "true"
+	}
+
+	assert.Equal(t, expected, lit.Value, "lit.Value")
+	assert.Equal(t, stringBool, lit.TokenLiteral(), "lit.TokenLiteral()")
+}
+
+func testIdentifier(t *testing.T, exp ast.Expression, value string) {
+	ident, ok := exp.(*ast.Identifier)
+	if !ok {
+		t.Fatalf("exp not *ast.Identifier. got=%T", exp)
+	}
+
+	require.Equal(t, value, ident.Value, "ident.Value")
+	require.Equal(t, value, ident.TokenLiteral(), "ident.TokenLiteral()")
+}
+
+func testLiteralExpression(t *testing.T, expr ast.Expression, expected any) {
+	switch val := expected.(type) {
+	case int:
+		testIntegerLiteral(t, expr, int64(val))
+	case int64:
+		testIntegerLiteral(t, expr, val)
+	case string:
+		testIdentifier(t, expr, val)
+	case bool:
+		testBooleanLiteral(t, expr, val)
+	default:
+		t.Fatalf("expresion type not handled: type(%T)", expr)
+	}
+}
+
+func testInfixExpression(t *testing.T, expr ast.Expression, left any, operator string, right any) {
+	opExp, ok := expr.(*ast.InfixExpression)
+	if !ok {
+		t.Errorf("exp is not ast.InfixExpression. got=%T(%s)", expr, expr)
+	}
+
+	testLiteralExpression(t, opExp.Left, left)
+	require.Equal(t, operator, opExp.Operator, "opExp.Operator")
+	testLiteralExpression(t, opExp.Right, right)
 }

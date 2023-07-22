@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/indeedhat/monkey-lang/ast"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,11 +19,5 @@ func TestIdentifierExpression(t *testing.T) {
 		)
 	}
 
-	ident, ok := stmt.Expression.(*ast.Identifier)
-	if !ok {
-		t.Fatalf("stmt.Expression bad type: expected(*ast.Identifier) found(%T)", stmt.Expression)
-	}
-
-	assert.Equal(t, "ook", ident.Value, "ident.Value")
-	assert.Equal(t, "ook", ident.TokenLiteral(), "ident.TokenLiteral()")
+	testIdentifier(t, stmt.Expression, "ook")
 }

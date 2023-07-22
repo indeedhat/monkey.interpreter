@@ -10,9 +10,9 @@ import (
 
 var infixTests = []struct {
 	inpuut   string
-	left     int64
+	left     any
 	operator string
-	right    int64
+	right    any
 }{
 	{"5 + 5;", 5, "+", 5},
 	{"5 - 5;", 5, "-", 5},
@@ -22,6 +22,9 @@ var infixTests = []struct {
 	{"5 > 5;", 5, ">", 5},
 	{"5 == 5;", 5, "==", 5},
 	{"5 != 5;", 5, "!=", 5},
+	{"true == true", true, "==", true},
+	{"true != false", true, "!=", false},
+	{"false == false", false, "==", false},
 }
 
 func TestParsingInfixExpressions(t *testing.T) {
@@ -38,14 +41,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 				)
 			}
 
-			infix, ok := stmt.Expression.(*ast.InfixExpression)
-			if !ok {
-				t.Fatalf("stmt.Expression bad type: expected(*ast.InfixExpression) found(%T)", stmt.Expression)
-			}
-
-			testIntegerLiteral(t, infix.Left, tCase.left)
-			assert.Equal(t, tCase.operator, infix.Operator, "infix.Operator")
-			testIntegerLiteral(t, infix.Right, tCase.right)
+			testInfixExpression(t, stmt.Expression, tCase.left, tCase.operator, tCase.right)
 		})
 	}
 }
@@ -66,6 +62,10 @@ var operatorPresedenceTests = []struct {
 	{"5 > 4 == 3 < 4", "((5 > 4) == (3 < 4))"},
 	{"5 < 4 != 3 > 4", "((5 < 4) != (3 > 4))"},
 	{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"},
+	{"true", "true"},
+	{"false", "false"},
+	{"3 > 5 == false", "((3 > 5) == false)"},
+	{"3 < 5 == true", "((3 < 5) == true)"},
 }
 
 func TestOperatorPresedenceParsing(t *testing.T) {

@@ -10,10 +10,12 @@ import (
 var prefixTests = []struct {
 	input    string
 	operator string
-	intValue int64
+	expected any
 }{
 	{"!5", "!", 5},
 	{"-15", "-", 15},
+	{"!true", "!", true},
+	{"!false", "!", false},
 }
 
 func TestParsingPrefixExpressions(t *testing.T) {
@@ -34,7 +36,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 			}
 
 			require.Equal(t, tCase.operator, prefix.Operator)
-			testIntegerLiteral(t, prefix.Right, tCase.intValue)
+			testLiteralExpression(t, prefix.Right, tCase.expected)
 		})
 	}
 }
