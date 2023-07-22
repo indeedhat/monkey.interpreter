@@ -4,45 +4,47 @@ type TokenType string
 
 const (
 	// Special
-	Illegal TokenType = "illegal"
-	Eof     TokenType = "eof"
+	Illegal TokenType = "ILLEGAL"
+	Eof     TokenType = "EOF"
 
 	// Identifiers & literals
-	Ident TokenType = "ident"
-	Int   TokenType = "int"
+	Ident TokenType = "IDENT"
+	Int   TokenType = "INT"
 
 	// Operators
-	Assign      TokenType = "assign"
-	Plus        TokenType = "plus"
-	Minus       TokenType = "minus"
-	Bang        TokenType = "bang"
-	Asterisk    TokenType = "asterisk"
-	Slash       TokenType = "slash"
-	LessThan    TokenType = "less-than"
-	GreaterThan TokenType = "greater-than"
+	Assign      TokenType = "="
+	Plus        TokenType = "+"
+	Minus       TokenType = "-"
+	Bang        TokenType = "!"
+	Asterisk    TokenType = "*"
+	Slash       TokenType = "/"
+	LessThan    TokenType = "<"
+	GreaterThan TokenType = ">"
 
-	Equal          TokenType = "equal"
-	NotEqual       TokenType = "not-equal"
-	GreaterOrEqual TokenType = "greater-or-equal"
-	LessOrEqual    TokenType = "less-or-equal"
+	Equal          TokenType = "=="
+	NotEqual       TokenType = "!="
+	GreaterOrEqual TokenType = ">="
+	LessOrEqual    TokenType = "<="
 
 	// Delimiters
-	Comma     TokenType = "comma"
-	Semicolon TokenType = "semicolon"
+	Comma     TokenType = ","
+	Semicolon TokenType = ";"
 
-	LParen TokenType = "lparen"
-	RParen TokenType = "rparen"
-	LBrace TokenType = "lbrace"
-	RBrace TokenType = "rbrace"
+	LParen   TokenType = "("
+	RParen   TokenType = ")"
+	LBrace   TokenType = "{"
+	RBrace   TokenType = "}"
+	LBracket TokenType = "["
+	RBracket TokenType = "]"
 
 	// Keywords
-	Function TokenType = "function"
-	Let      TokenType = "let"
-	If       TokenType = "if"
-	Else     TokenType = "else"
-	Return   TokenType = "return"
-	True     TokenType = "true"
-	False    TokenType = "false"
+	Function TokenType = "FUNCTION"
+	Let      TokenType = "LET"
+	If       TokenType = "IF"
+	Else     TokenType = "ELSE"
+	Return   TokenType = "RETURN"
+	True     TokenType = "TRUE"
+	False    TokenType = "FALSE"
 )
 
 type Token struct {

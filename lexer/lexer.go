@@ -27,7 +27,7 @@ func New(input string) *Lexer {
 	return l
 }
 
-func (l *Lexer) Next() token.Token {
+func (l *Lexer) NextToken() token.Token {
 	defer l.readChar()
 	l.consumeWhitespace()
 
@@ -44,6 +44,10 @@ func (l *Lexer) Next() token.Token {
 		return l.token(token.LBrace, string(l.char))
 	case '}':
 		return l.token(token.RBrace, string(l.char))
+	case '[':
+		return l.token(token.LBracket, string(l.char))
+	case ']':
+		return l.token(token.RBracket, string(l.char))
 	case '+':
 		return l.token(token.Plus, string(l.char))
 	case '-':

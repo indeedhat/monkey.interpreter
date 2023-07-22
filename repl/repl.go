@@ -30,7 +30,7 @@ func Start(in io.Reader, out io.Writer) {
 		lex := lexer.New(text)
 
 		for {
-			tok := lex.Next()
+			tok := lex.NextToken()
 			if tok.Type == token.Eof {
 				break
 			}

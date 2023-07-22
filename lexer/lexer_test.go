@@ -97,6 +97,12 @@ var nextTokenTests = []struct {
 	{token.Int, "10"},
 	{token.Semicolon, ";"},
 
+	{token.Ident, "data"},
+	{token.LBracket, "["},
+	{token.Int, "0"},
+	{token.RBracket, "]"},
+	{token.Semicolon, ";"},
+
 	{token.Eof, ""},
 }
 
@@ -123,12 +129,14 @@ if (5 < 10) {
 10 != 9;
 10 <= 10;
 10 >= 10;
+
+data[0];
 `
 
 	lex := New(input)
 
 	for i, tst := range nextTokenTests {
-		tok := lex.Next()
+		tok := lex.NextToken()
 
 		if tok.Type != tst.expectedType {
 			t.Fatalf("tests[%d] - wrong token type. expected(%q) found(%q)",
