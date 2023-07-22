@@ -11,6 +11,18 @@ import (
 type prefixParser func() ast.Expression
 type infixParser func(ast.Expression) ast.Expression
 
+// operatorPresedence defines the presedence values for each of the operator types
+var operatorPresedence = map[token.TokenType]int{
+	token.Equal:       Equals,
+	token.NotEqual:    Equals,
+	token.LessThan:    LessGreater,
+	token.GreaterThan: LessGreater,
+	token.Plus:        Sum,
+	token.Minus:       Sum,
+	token.Slash:       Product,
+	token.Asterisk:    Product,
+}
+
 type Parser struct {
 	lex *lexer.Lexer
 
@@ -34,6 +46,15 @@ func New(lex *lexer.Lexer) *Parser {
 	p.registerPrefixParser(token.Int, p.parseIntegerLiteral)
 	p.registerPrefixParser(token.Bang, p.parsePrefixExpression)
 	p.registerPrefixParser(token.Minus, p.parsePrefixExpression)
+
+    p.registerInfixParser(token.Equal, p.parseInfixExpression)
+    p.registerInfixParser(token.NotEqual, p.parseInfixExpression)
+    p.registerInfixParser(token.LessThan, p.parseInfixExpression)
+    p.registerInfixParser(token.GreaterThan, p.parseInfixExpression)
+    p.registerInfixParser(token.Plus, p.parseInfixExpression)
+    p.registerInfixParser(token.Minus, p.parseInfixExpression)
+    p.registerInfixParser(token.Slash, p.parseInfixExpression)
+    p.registerInfixParser(token.Asterisk, p.parseInfixExpression)
 
 	// populate cur/next token fields
 	p.nextToken()
@@ -93,6 +114,24 @@ func (p *Parser) parseStatement() ast.Statement {
 	default:
 		return p.parseExpressionStatement()
 	}
+}
+
+// curPresedence gets the presedence of the current token from the operator table
+func (p *Parser) curPresedence() int {
+	if presedence, ok := operatorPresedence[p.curToken.Type]; ok {
+		return presedence
+	}
+
+	return LowestPresedence
+}
+
+// peekPresedence gets the presedence of the next token from the operator table
+func (p *Parser) peekPresedence() int {
+	if presedence, ok := operatorPresedence[p.peekToken.Type]; ok {
+		return presedence
+	}
+
+	return LowestPresedence
 }
 
 // peekTokenIs checks if the next token in the stream is of the provided type

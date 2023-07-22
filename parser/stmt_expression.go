@@ -37,5 +37,16 @@ func (p *Parser) parseExpression(presedence int) ast.Expression {
 	}
 
 	leftExpr := prefix()
+
+	for !p.peekTokenIs(token.Semicolon) && presedence < p.peekPresedence() {
+		infix := p.infixParsers[p.peekToken.Type]
+		if infix == nil {
+			break
+		}
+
+		p.nextToken()
+		leftExpr = infix(leftExpr)
+	}
+
 	return leftExpr
 }
