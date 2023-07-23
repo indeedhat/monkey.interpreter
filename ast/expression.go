@@ -179,3 +179,38 @@ func (*FunctionLiteral) expressionNode() {
 }
 
 var _ Expression = (*FunctionLiteral)(nil)
+
+type FunctionCallExpression struct {
+	Token     token.Token
+	Function  Expression
+	Arguments []Expression
+}
+
+// String implements Expression
+func (n *FunctionCallExpression) String() string {
+	var buf bytes.Buffer
+
+	buf.WriteString(n.Function.String())
+	buf.WriteString("(")
+
+	args := make([]string, 0, len(n.Arguments))
+	for _, arg := range n.Arguments {
+		args = append(args, arg.String())
+	}
+	buf.WriteString(strings.Join(args, ", "))
+
+	buf.WriteString(")")
+
+	return buf.String()
+}
+
+// TokenLiteral implements Expression
+func (n *FunctionCallExpression) TokenLiteral() string {
+	return n.Token.Literal
+}
+
+// expressionNode implements Expression
+func (*FunctionCallExpression) expressionNode() {
+}
+
+var _ Expression = (*FunctionCallExpression)(nil)

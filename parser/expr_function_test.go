@@ -63,3 +63,31 @@ func TestFunctionArgumentParsing(t *testing.T) {
 		})
 	}
 }
+
+func TestFunctionCalls(t *testing.T) {
+	program := parseProgram(t, `add(1, 2 * 3, 4 + 5);`)
+
+	require.Len(t, program.Statements, 1, "program.Statements")
+
+	expr, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] bad type: expect(*ast.ExpressionStatement) found(%T)",
+			program.Statements[0],
+		)
+	}
+
+	fn, ok := expr.Expression.(*ast.FunctionCallExpression)
+	if !ok {
+		t.Fatalf("expr.Expression bad type: expect(*ast.FunctionCallExpression) found(%T)",
+			expr.Expression,
+		)
+	}
+
+	testIdentifier(t, fn.Function, "add")
+
+	require.Len(t, fn.Arguments, 3, "fn.Arguments")
+	testLiteralExpression(t, fn.Arguments[0], 1)
+	testInfixExpression(t, fn.Arguments[1], 2, "*", 3)
+	testInfixExpression(t, fn.Arguments[2], 4, "+", 5)
+
+}
