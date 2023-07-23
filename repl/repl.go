@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"github.com/indeedhat/monkey-lang/lexer"
-	"github.com/indeedhat/monkey-lang/token"
+	"github.com/indeedhat/monkey-lang/parser"
 )
 
 const PromptString = "> "
@@ -28,14 +28,18 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		lex := lexer.New(text)
+		p := parser.New(lex)
 
-		for {
-			tok := lex.NextToken()
-			if tok.Type == token.Eof {
-				break
+		program := p.ParseProgram()
+		if len(p.Errors()) != 0 {
+			for _, err := range p.Errors() {
+				fmt.Fprintf(out, "parser error: %s\n", err.Error())
 			}
-
-			fmt.Fprintf(out, "%+v\n", tok)
 		}
+
+		// fmt.Println(out, program.String())
+
+		io.WriteString(out, program.String())
+		io.WriteString(out, "\n")
 	}
 }
