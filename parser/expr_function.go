@@ -46,3 +46,33 @@ func (p *Parser) parseFuncionParameters() (params []*ast.Identifier) {
 
 	return params
 }
+
+func (p *Parser) parseFunctionCallExpression(fn ast.Expression) ast.Expression {
+	return &ast.FunctionCallExpression{
+		Token:     p.curToken,
+		Function:  fn,
+		Arguments: p.parseFuncitonCallArguments(),
+	}
+}
+
+func (p *Parser) parseFuncitonCallArguments() (args []ast.Expression) {
+	p.nextToken()
+
+	if p.curTokenIs(token.RParen) {
+		return args
+	}
+
+	// i dont like this procedure but i cant think of a better way atm
+	args = append(args, p.parseExpression(LowestPresedence))
+	for p.peekTokenIs(token.Comma) {
+		p.nextToken()
+		p.nextToken()
+		args = append(args, p.parseExpression(LowestPresedence))
+	}
+
+	if !p.expectPeek(token.RParen) {
+		return nil
+	}
+
+	return args
+}

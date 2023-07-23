@@ -21,9 +21,10 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 
-	// TODO: assigning of expressin not yet implemented
-	for !p.curTokenIs(token.Semicolon) {
-		// skip expression tokens
+	p.nextToken()
+	stmt.Value = p.parseExpression(LowestPresedence)
+
+	if !p.curTokenIs(token.Semicolon) {
 		p.nextToken()
 	}
 

@@ -7,17 +7,24 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var returnStatemnetTests = []struct {
+	input string
+	value any
+}{
+	{"return 1", 1},
+	{"return 100;", 100},
+	{"return true;", true},
+	{"return datas;", "datas"},
+}
+
 func TestReturnStatements(t *testing.T) {
-	program := parseProgram(t, `
-return 1;
-return 11;
-return 69420;
-`)
+	for _, tCase := range returnStatemnetTests {
+		program := parseProgram(t, tCase.input)
 
-	require.Len(t, program.Statements, 3, "program.Statements")
+		require.Len(t, program.Statements, 1, "prorgam.Statements")
 
-	for _, stmt := range program.Statements {
-		require.Equal(t, "return", stmt.TokenLiteral(), "stmt")
-		require.IsType(t, stmt, &ast.ReturnStatement{}, "stmt")
+		require.Equal(t, "return", program.Statements[0].TokenLiteral(), "stmt")
+		require.IsType(t, program.Statements[0], &ast.ReturnStatement{}, "stmt")
+		testLiteralExpression(t, program.Statements[0].(*ast.ReturnStatement).Vaule, tCase.value)
 	}
 }
