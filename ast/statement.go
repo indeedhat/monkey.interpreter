@@ -95,3 +95,34 @@ func (n *ReturnStatement) TokenLiteral() string {
 }
 
 var _ Statement = (*ReturnStatement)(nil)
+
+type BlockStatement struct {
+	Token      token.Token
+	Statements []Statement
+}
+
+// String implements Statement
+func (n *BlockStatement) String() string {
+	var buf bytes.Buffer
+
+	buf.WriteString("{ ")
+
+	for _, stmt := range n.Statements {
+		buf.WriteString(stmt.String())
+	}
+
+	buf.WriteString(" }")
+
+	return buf.String()
+}
+
+// statementNode implements Statement
+func (n *BlockStatement) statementNode() {
+}
+
+// TokenLiteral implements Node
+func (n *BlockStatement) TokenLiteral() string {
+	return n.Token.Literal
+}
+
+var _ Statement = (*BlockStatement)(nil)

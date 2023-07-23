@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/indeedhat/monkey-lang/token"
 )
@@ -107,3 +108,74 @@ func (*BooleanLiteral) expressionNode() {
 }
 
 var _ Expression = (*BooleanLiteral)(nil)
+
+type IfExpression struct {
+	Token       token.Token
+	Condition   Expression
+	Consiquence *BlockStatement
+	Alternative *BlockStatement
+}
+
+// String implements Expression
+func (n *IfExpression) String() string {
+	var buf bytes.Buffer
+
+	buf.WriteString("if ")
+	buf.WriteString(n.Condition.String())
+	buf.WriteString(" ")
+	buf.WriteString(n.Consiquence.String())
+
+	if n.Alternative != nil {
+		buf.WriteString(" else ")
+		buf.WriteString(n.Alternative.String())
+	}
+
+	return buf.String()
+}
+
+// TokenLiteral implements Expression
+func (n *IfExpression) TokenLiteral() string {
+	return n.Token.Literal
+}
+
+// expressionNode implements Expression
+func (*IfExpression) expressionNode() {
+}
+
+var _ Expression = (*IfExpression)(nil)
+
+type FunctionLiteral struct {
+	Token      token.Token
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+// String implements Expression
+func (n *FunctionLiteral) String() string {
+	var buf bytes.Buffer
+
+	buf.WriteString(n.TokenLiteral())
+	buf.WriteString("(")
+
+	params := make([]string, 0, len(n.Parameters))
+	for _, param := range n.Parameters {
+		params = append(params, param.String())
+	}
+	buf.WriteString(strings.Join(params, ", "))
+
+	buf.WriteString(")")
+	buf.WriteString(n.Body.String())
+
+	return buf.String()
+}
+
+// TokenLiteral implements Expression
+func (n *FunctionLiteral) TokenLiteral() string {
+	return n.Token.Literal
+}
+
+// expressionNode implements Expression
+func (*FunctionLiteral) expressionNode() {
+}
+
+var _ Expression = (*FunctionLiteral)(nil)

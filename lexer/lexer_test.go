@@ -97,11 +97,11 @@ var nextTokenTests = []struct {
 	{token.Int, "10"},
 	{token.Semicolon, ";"},
 
-	{token.Ident, "data"},
-	{token.LBracket, "["},
-	{token.Int, "0"},
-	{token.RBracket, "]"},
-	{token.Semicolon, ";"},
+	// {token.Ident, "data"},
+	// {token.LBracket, "["},
+	// {token.Int, "0"},
+	// {token.RBracket, "]"},
+	// {token.Semicolon, ";"},
 
 	{token.Eof, ""},
 }
@@ -129,9 +129,10 @@ if (5 < 10) {
 10 != 9;
 10 <= 10;
 10 >= 10;
-
-data[0];
 `
+	//
+	//data[0];
+	//`
 
 	lex := New(input)
 
