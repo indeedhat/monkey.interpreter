@@ -147,6 +147,33 @@ func TestEvalBoolExpression(t *testing.T) {
 	}
 }
 
+var stringTests = []struct {
+	input string
+	value string
+}{
+	{`"this is a string"`, "this is a string"},
+	{`"this is a string with \"quotes\""`, `this is a string with "quotes"`},
+	{`"this is a string with a \ (backslash)"`, `this is a string with a \ (backslash)`},
+}
+
+func TestParseString(t *testing.T) {
+	for _, tCase := range stringTests {
+		t.Run(tCase.input, func(t *testing.T) {
+			evld := testEval(tCase.input)
+			testStringObject(t, evld, tCase.value)
+		})
+	}
+}
+
+func testStringObject(t *testing.T, obj object.Object, expected string) {
+	result, ok := obj.(*object.String)
+	if !ok {
+		t.Fatalf("bad object type: expected(String) found(%T)", obj)
+	}
+
+	require.Equal(t, expected, result.Value)
+}
+
 func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)

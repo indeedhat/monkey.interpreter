@@ -59,6 +59,27 @@ func (*IntegerLiteral) expressionNode() {
 
 var _ Expression = (*IntegerLiteral)(nil)
 
+type StringLiteral struct {
+	Token token.Token
+	Value string
+}
+
+// String implements Expression
+func (n *StringLiteral) String() string {
+	return n.Token.Literal
+}
+
+// TokenLiteral implements Expression
+func (n *StringLiteral) TokenLiteral() string {
+	return n.Token.Literal
+}
+
+// expressionNode implements Expression
+func (*StringLiteral) expressionNode() {
+}
+
+var _ Expression = (*StringLiteral)(nil)
+
 type PrefixExpression struct {
 	Token    token.Token
 	Operator string

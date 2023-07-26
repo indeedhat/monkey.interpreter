@@ -55,6 +55,7 @@ func New(lex *lexer.Lexer) *Parser {
 	p.registerPrefixParser(token.LParen, p.parseGroupedExpressions)
 	p.registerPrefixParser(token.If, p.parseIfExpression)
 	p.registerPrefixParser(token.Function, p.parseFunctionLiteral)
+	p.registerPrefixParser(token.String, p.parseStringLiteral)
 
 	p.registerInfixParser(token.GreaterOrEqual, p.parseInfixExpression)
 	p.registerInfixParser(token.LessOrEqual, p.parseInfixExpression)

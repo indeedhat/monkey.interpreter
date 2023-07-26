@@ -8,8 +8,9 @@ const (
 	Eof     TokenType = "EOF"
 
 	// Identifiers & literals
-	Ident TokenType = "IDENT"
-	Int   TokenType = "INT"
+	Ident  TokenType = "IDENT"
+	Int    TokenType = "INT"
+	String TokenType = "STRING"
 
 	// Operators
 	Assign      TokenType = "="

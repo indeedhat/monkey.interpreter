@@ -34,6 +34,33 @@ func TestParseBool(t *testing.T) {
 	}
 }
 
+var stringTests = []struct {
+	input string
+	value string
+}{
+	{`"this is a string"`, "this is a string"},
+	{`"this is a string with \"quotes\""`, `this is a string with "quotes"`},
+	{`"this is a string with a \ (backslash)"`, `this is a string with a \ (backslash)`},
+}
+
+func TestParseString(t *testing.T) {
+	for _, tCase := range stringTests {
+		t.Run(tCase.input, func(t *testing.T) {
+			program := parseProgram(t, tCase.input)
+			require.Len(t, program.Statements, 1)
+
+			stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+			if !ok {
+				t.Fatalf("program.Statements[0] bad type: expect(*ast.ExpressionStatement) found(%T)",
+					program.Statements[0],
+				)
+			}
+
+			testStringLiteral(t, stmt.Expression, tCase.value)
+		})
+	}
+}
+
 func TestIntLiteralExpression(t *testing.T) {
 	program := parseProgram(t, `5;`)
 

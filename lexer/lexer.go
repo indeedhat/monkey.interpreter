@@ -1,6 +1,8 @@
 package lexer
 
 import (
+	"bytes"
+
 	"github.com/indeedhat/monkey-lang/token"
 )
 
@@ -76,6 +78,12 @@ func (l *Lexer) NextToken() token.Token {
 			return l.token(token.GreaterOrEqual, l.multiReadChar(2))
 		}
 		return l.token(token.GreaterThan, string(l.char))
+	case '"':
+		str := l.readStringLiteral()
+		if str == nil {
+			return l.token(token.Illegal, string(l.char))
+		}
+		return l.token(token.String, *str)
 	case 0:
 		return token.Token{Type: token.Eof}
 	default:
@@ -88,7 +96,6 @@ func (l *Lexer) NextToken() token.Token {
 		}
 
 		return l.token(token.Illegal, string(l.char))
-
 	}
 }
 
@@ -154,6 +161,36 @@ func (l *Lexer) readIdentifier() string {
 	}
 
 	return l.input[pos:l.readPos]
+}
+
+// readStringLiteral reads a string literal
+// this will only accept double quoted strings and can have double quotes escaped with a \
+func (l *Lexer) readStringLiteral() *string {
+	var buf bytes.Buffer
+
+	for {
+		char := l.input[l.pos]
+		peekChar := l.peekChar()
+		// if we dont find a closing " then its an invalid string
+		if peekChar == 0 {
+			return nil
+		}
+
+		if char != '\\' || peekChar != '"' {
+			buf.WriteString(string(char))
+		}
+
+		l.readChar()
+		if peekChar == '"' && char != '\\' {
+			break
+		}
+	}
+
+	// skip final "
+	l.readChar()
+	// dont include the " on each side in the strings value
+	str := buf.String()[1:]
+	return &str
 }
 
 // readNumber reads a numeric value from the input string

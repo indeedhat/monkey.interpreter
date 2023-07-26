@@ -17,6 +17,11 @@ func (p *Parser) parseBooleanLiteral() ast.Expression {
 	return &ast.BooleanLiteral{Token: p.curToken, Value: p.curTokenIs(token.True)}
 }
 
+// parseStringLiteral parses a string literal token as a literal expression
+func (p *Parser) parseStringLiteral() ast.Expression {
+	return &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+}
+
 // parseIntegerLiteral parses a token as an integer literal expression
 func (p *Parser) parseIntegerLiteral() ast.Expression {
 	expr := &ast.IntegerLiteral{Token: p.curToken}

@@ -65,6 +65,16 @@ func testBooleanLiteral(t *testing.T, expr ast.Expression, expected bool) {
 	assert.Equal(t, stringBool, lit.TokenLiteral(), "lit.TokenLiteral()")
 }
 
+func testStringLiteral(t *testing.T, expr ast.Expression, expected string) {
+	lit, ok := expr.(*ast.StringLiteral)
+	if !ok {
+		t.Fatalf("bad expression type: expect(*ast.StringLiteral) found(%T)", expr)
+	}
+
+	assert.Equal(t, expected, lit.Value, "lit.Value")
+	assert.Equal(t, expected, lit.TokenLiteral(), "lit.TokenLiteral()")
+}
+
 func testIdentifier(t *testing.T, exp ast.Expression, value string) {
 	ident, ok := exp.(*ast.Identifier)
 	if !ok {

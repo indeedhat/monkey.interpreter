@@ -96,6 +96,9 @@ var nextTokenTests = []struct {
 	{token.GreaterOrEqual, ">="},
 	{token.Int, "10"},
 	{token.Semicolon, ";"},
+	{token.String, "this is a string"},
+	{token.String, `this is a string with "quotes"`},
+	{token.String, `this is a string with a \ (backslash)`},
 
 	// {token.Ident, "data"},
 	// {token.LBracket, "["},
@@ -129,6 +132,10 @@ if (5 < 10) {
 10 != 9;
 10 <= 10;
 10 >= 10;
+
+"this is a string";
+"this is a string with \"quotes\"";
+"this is a string with a \ (backslash)";
 `
 	//
 	//data[0];

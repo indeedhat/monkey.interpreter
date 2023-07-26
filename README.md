@@ -1,3 +1,3 @@
 # Monkey lang interpreter
 
-> current place 83
+> current place 124

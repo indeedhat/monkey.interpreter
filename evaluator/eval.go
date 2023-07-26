@@ -22,6 +22,8 @@ func Eval(node ast.Node) object.Object {
 		return Eval(val.Expression)
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: val.Value}
+	case *ast.StringLiteral:
+		return &object.String{Value: val.Value}
 	case *ast.BooleanLiteral:
 		return nativeBool(val.Value)
 	case *ast.NullLiteral:
