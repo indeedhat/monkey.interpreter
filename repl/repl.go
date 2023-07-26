@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/indeedhat/monkey-lang/evaluator"
 	"github.com/indeedhat/monkey-lang/lexer"
 	"github.com/indeedhat/monkey-lang/parser"
 )
@@ -37,7 +38,13 @@ func Start(in io.Reader, out io.Writer) {
 			}
 		}
 
-		io.WriteString(out, program.String())
+		evald := evaluator.Eval(program)
+		if evald == nil {
+			io.WriteString(out, "ERROR: falied to eval")
+		} else {
+			io.WriteString(out, evald.Inspect())
+		}
+
 		io.WriteString(out, "\n")
 	}
 }

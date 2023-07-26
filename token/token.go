@@ -45,6 +45,7 @@ const (
 	Return   TokenType = "RETURN"
 	True     TokenType = "TRUE"
 	False    TokenType = "FALSE"
+	Null     TokenType = "NULL"
 )
 
 type Token struct {
@@ -62,6 +63,7 @@ var keywords = map[string]TokenType{
 	"return": Return,
 	"true":   True,
 	"false":  False,
+	"null":   Null,
 }
 
 // LookupIdent looks up the identifer in the map of keywords and returns the appropriate

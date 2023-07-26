@@ -13,15 +13,17 @@ type infixParser func(ast.Expression) ast.Expression
 
 // operatorPresedence defines the presedence values for each of the operator types
 var operatorPresedence = map[token.TokenType]int{
-	token.Equal:       Equals,
-	token.NotEqual:    Equals,
-	token.LessThan:    LessGreater,
-	token.GreaterThan: LessGreater,
-	token.Plus:        Sum,
-	token.Minus:       Sum,
-	token.Slash:       Product,
-	token.Asterisk:    Product,
-	token.LParen:      Call,
+	token.Equal:          Equals,
+	token.NotEqual:       Equals,
+	token.LessThan:       LessGreater,
+	token.GreaterThan:    LessGreater,
+	token.GreaterOrEqual: LessGreater,
+	token.LessOrEqual:    LessGreater,
+	token.Plus:           Sum,
+	token.Minus:          Sum,
+	token.Slash:          Product,
+	token.Asterisk:       Product,
+	token.LParen:         Call,
 }
 
 type Parser struct {
@@ -45,6 +47,7 @@ func New(lex *lexer.Lexer) *Parser {
 
 	p.registerPrefixParser(token.Ident, p.parseIdentifier)
 	p.registerPrefixParser(token.Int, p.parseIntegerLiteral)
+	p.registerPrefixParser(token.Null, p.parseNullLiteral)
 	p.registerPrefixParser(token.Bang, p.parsePrefixExpression)
 	p.registerPrefixParser(token.Minus, p.parsePrefixExpression)
 	p.registerPrefixParser(token.True, p.parseBooleanLiteral)
@@ -53,6 +56,8 @@ func New(lex *lexer.Lexer) *Parser {
 	p.registerPrefixParser(token.If, p.parseIfExpression)
 	p.registerPrefixParser(token.Function, p.parseFunctionLiteral)
 
+	p.registerInfixParser(token.GreaterOrEqual, p.parseInfixExpression)
+	p.registerInfixParser(token.LessOrEqual, p.parseInfixExpression)
 	p.registerInfixParser(token.Equal, p.parseInfixExpression)
 	p.registerInfixParser(token.NotEqual, p.parseInfixExpression)
 	p.registerInfixParser(token.LessThan, p.parseInfixExpression)
@@ -102,7 +107,8 @@ func (p *Parser) registerInfixParser(tknType token.TokenType, parser infixParser
 }
 
 func (p *Parser) errorf(format string, args ...any) {
-	p.errors = append(p.errors, fmt.Errorf(format, args...))
+	lineKey := fmt.Sprintf(" -- [line(%d) pos(%d)]", p.peekToken.Line, p.peekToken.Pos)
+	p.errors = append(p.errors, fmt.Errorf(format+lineKey, args...))
 }
 
 // nextToken advances the lexer to the next token

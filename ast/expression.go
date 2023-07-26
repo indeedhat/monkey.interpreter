@@ -214,3 +214,23 @@ func (*FunctionCallExpression) expressionNode() {
 }
 
 var _ Expression = (*FunctionCallExpression)(nil)
+
+type NullLiteral struct {
+	Token token.Token
+}
+
+// String implements Expression
+func (n *NullLiteral) String() string {
+	return "NULL"
+}
+
+// TokenLiteral implements Expression
+func (n *NullLiteral) TokenLiteral() string {
+	return n.Token.Literal
+}
+
+// expressionNode implements Expression
+func (*NullLiteral) expressionNode() {
+}
+
+var _ Expression = (*NullLiteral)(nil)

@@ -22,6 +22,8 @@ var infixTests = []struct {
 	{"5 > 5;", 5, ">", 5},
 	{"5 == 5;", 5, "==", 5},
 	{"5 != 5;", 5, "!=", 5},
+	{"5 >= 5;", 5, ">=", 5},
+	{"5 <= 5;", 5, "<=", 5},
 	{"true == true", true, "==", true},
 	{"true != false", true, "!=", false},
 	{"false == false", false, "==", false},
