@@ -131,10 +131,10 @@ func (*BooleanLiteral) expressionNode() {
 var _ Expression = (*BooleanLiteral)(nil)
 
 type IfExpression struct {
-	Token       token.Token
-	Condition   Expression
-	Consiquence *BlockStatement
-	Alternative *BlockStatement
+	Token     token.Token
+	Condition Expression
+	IfBlock   *BlockStatement
+	ElseBlock *BlockStatement
 }
 
 // String implements Expression
@@ -144,11 +144,11 @@ func (n *IfExpression) String() string {
 	buf.WriteString("if ")
 	buf.WriteString(n.Condition.String())
 	buf.WriteString(" ")
-	buf.WriteString(n.Consiquence.String())
+	buf.WriteString(n.IfBlock.String())
 
-	if n.Alternative != nil {
+	if n.ElseBlock != nil {
 		buf.WriteString(" else ")
-		buf.WriteString(n.Alternative.String())
+		buf.WriteString(n.ElseBlock.String())
 	}
 
 	return buf.String()

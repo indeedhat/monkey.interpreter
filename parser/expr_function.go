@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"log"
-
 	"github.com/indeedhat/monkey-lang/ast"
 	"github.com/indeedhat/monkey-lang/token"
 )
@@ -16,7 +14,6 @@ func (p *Parser) parseFunctionLiteral() ast.Expression {
 
 	expr.Parameters = p.parseFuncionParameters()
 
-	log.Print(p.curToken.Literal)
 	if !p.expectPeek(token.LBrace) {
 		return nil
 	}

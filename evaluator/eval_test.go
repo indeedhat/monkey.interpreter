@@ -3,6 +3,7 @@ package evaluator
 import (
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/indeedhat/monkey-lang/evaluator/object"
 	"github.com/indeedhat/monkey-lang/lexer"
 	"github.com/indeedhat/monkey-lang/parser"
@@ -174,10 +175,64 @@ func testStringObject(t *testing.T, obj object.Object, expected string) {
 	require.Equal(t, expected, result.Value)
 }
 
+var returnTests = []struct {
+	input string
+	value any
+}{
+	{`return 5`, 5},
+	{`return true`, true},
+	{`return "some text"`, "some text"},
+	{`return 5 * 5`, 25},
+	{`return 5 > 10`, false},
+	{`return null`, nil},
+	{"if (1 > 2) { return 10 } else { return 20 }", 20},
+	{"if (1 < 2) { return 10 } else { return 20 }", 10},
+	{`
+        if (true) {
+            if (true) {
+                return 10;
+            }
+            return 1;
+        }
+    `,
+		10,
+	},
+}
+
+func TestReturn(t *testing.T) {
+	for _, tCase := range returnTests {
+		t.Run(tCase.input, func(t *testing.T) {
+			evald := testEval(tCase.input)
+
+			switch expected := tCase.value.(type) {
+			case int:
+				testIntegerObject(t, evald, int64(expected))
+			case bool:
+				testBoolObject(t, evald, expected)
+			case string:
+				testStringObject(t, evald, expected)
+			case nil:
+				testNullObject(t, evald)
+			}
+		})
+	}
+}
+
 func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
 	prog := p.ParseProgram()
+
+	return Eval(prog)
+}
+
+func testLoggedEval(t *testing.T, input string) object.Object {
+	l := lexer.New(input)
+	t.Log("lex: ", l)
+	p := parser.New(l)
+	t.Log("parse: ", spew.Sdump(p))
+	prog := p.ParseProgram()
+	t.Log("prog: ", spew.Sdump(prog.Statements))
 
 	return Eval(prog)
 }

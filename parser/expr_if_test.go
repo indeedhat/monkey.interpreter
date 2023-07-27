@@ -27,13 +27,13 @@ func TestIfExpression(t *testing.T) {
 	}
 
 	testInfixExpression(t, expr.Condition, "x", "<", "y")
-	require.Len(t, expr.Consiquence.Statements, 1, "expr.Consiquence")
-	require.Nil(t, expr.Alternative, "expr.Alternative")
+	require.Len(t, expr.IfBlock.Statements, 1, "expr.Consiquence")
+	require.Nil(t, expr.ElseBlock, "expr.Alternative")
 
-	consiquence, ok := expr.Consiquence.Statements[0].(*ast.ExpressionStatement)
+	consiquence, ok := expr.IfBlock.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
 		t.Fatalf("expr.Consiquence.Statements[0] bad type: expect(*ast.ExpressionStatement) found(%T)",
-			expr.Consiquence.Statements[0],
+			expr.IfBlock.Statements[0],
 		)
 	}
 
@@ -61,25 +61,25 @@ func TestIfElseExpression(t *testing.T) {
 
 	testInfixExpression(t, expr.Condition, "x", "<", "y")
 
-	require.NotNil(t, expr.Consiquence, "expr.Consiquence")
-	require.Len(t, expr.Consiquence.Statements, 1, "expr.Consiquence")
+	require.NotNil(t, expr.IfBlock, "expr.Consiquence")
+	require.Len(t, expr.IfBlock.Statements, 1, "expr.Consiquence")
 
-	require.NotNil(t, expr.Alternative, "expr.Alternative")
-	require.Len(t, expr.Alternative.Statements, 1, "expr.Alternative")
+	require.NotNil(t, expr.ElseBlock, "expr.Alternative")
+	require.Len(t, expr.ElseBlock.Statements, 1, "expr.Alternative")
 
-	consiquence, ok := expr.Consiquence.Statements[0].(*ast.ExpressionStatement)
+	consiquence, ok := expr.IfBlock.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
 		t.Fatalf("expr.Consiquence.Statements[0] bad type: expect(*ast.ExpressionStatement) found(%T)",
-			expr.Consiquence.Statements[0],
+			expr.IfBlock.Statements[0],
 		)
 	}
 
 	testIdentifier(t, consiquence.Expression, "x")
 
-	alternative, ok := expr.Alternative.Statements[0].(*ast.ExpressionStatement)
+	alternative, ok := expr.ElseBlock.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
 		t.Fatalf("expr.Alternative.Statements[0] bad type: expect(*ast.ExpressionStatement) found(%T)",
-			expr.Alternative.Statements[0],
+			expr.ElseBlock.Statements[0],
 		)
 	}
 	testIdentifier(t, alternative.Expression, "y")

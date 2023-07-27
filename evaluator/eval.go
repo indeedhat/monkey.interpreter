@@ -1,7 +1,7 @@
 package evaluator
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/indeedhat/monkey-lang/ast"
 	"github.com/indeedhat/monkey-lang/evaluator/object"
@@ -29,12 +29,30 @@ func Eval(node ast.Node) object.Object {
 	case *ast.NullLiteral:
 		return Null
 	case *ast.PrefixExpression:
-		return evalPrefixExpression(val.Operator, Eval(val.Right))
+		ret := Eval(val.Right)
+		if isErr(ret) {
+			return ret
+		}
+		return evalPrefixExpression(val.Operator, ret)
 	case *ast.InfixExpression:
-		return evalInfixExpression(Eval(val.Left), val.Operator, Eval(val.Right))
+		left := Eval(val.Right)
+		if isErr(left) {
+			return left
+		}
+		right := Eval(val.Right)
+		if isErr(right) {
+			return right
+		}
+		return evalInfixExpression(left, val.Operator, right)
+	case *ast.IfExpression:
+		return evalIfExpression(val)
+	case *ast.BlockStatement:
+		return evalBlockStatement(val)
+	case *ast.ReturnStatement:
+		return evalReturnStatement(val)
 	}
 
-	return nil
+	return error("unknown node: %T", node)
 }
 
 func evalStatements(statements []ast.Statement) object.Object {
@@ -42,9 +60,43 @@ func evalStatements(statements []ast.Statement) object.Object {
 
 	for _, statement := range statements {
 		result = Eval(statement)
+
+		switch ret := result.(type) {
+		case *object.Error:
+			// break exec on error
+			return ret
+		case *object.ReturnValue:
+			// break exec on early return
+			return ret.Value
+		}
 	}
 
 	return result
+}
+
+func evalBlockStatement(block *ast.BlockStatement) object.Object {
+	var result object.Object
+
+	for _, statement := range block.Statements {
+		result = Eval(statement)
+
+		// lets us return early from a block
+		if result != nil &&
+			(result.Type() == object.ReturnObj || result.Type() == object.ErrObj) {
+
+			return result
+		}
+	}
+
+	return result
+}
+
+func evalReturnStatement(ret *ast.ReturnStatement) object.Object {
+	val := Eval(ret.Vaule)
+	if isErr(val) {
+		return val
+	}
+	return &object.ReturnValue{Value: val}
 }
 
 func nativeBool(input bool) *object.Boolean {
@@ -55,91 +107,10 @@ func nativeBool(input bool) *object.Boolean {
 	return False
 }
 
-func evalPrefixExpression(operator string, right object.Object) object.Object {
-	switch operator {
-	case "!":
-		return evalBangPrefixOperator(right)
-	case "-":
-		return evalMinusPrefixOperator(right)
-	}
-	return nil
+func error(format string, args ...any) *object.Error {
+	return &object.Error{Message: fmt.Sprintf(format, args...)}
 }
 
-func evalBangPrefixOperator(right object.Object) object.Object {
-	switch right {
-	case True:
-		return False
-	case False:
-		return True
-	case Null:
-		return True
-	}
-
-	switch val := right.(type) {
-	case *object.Integer:
-		if val.Value == 0 {
-			return True
-		}
-	case *object.String:
-		if val.Value == "" {
-			return True
-		}
-	}
-
-	return False
-}
-
-func evalMinusPrefixOperator(right object.Object) object.Object {
-	if right.Type() != object.IntegerObj {
-		return Null
-	}
-
-	return &object.Integer{
-		Value: -(right.(*object.Integer).Value),
-	}
-}
-
-func evalInfixExpression(left object.Object, operator string, right object.Object) object.Object {
-	switch {
-	case left.Type() == object.IntegerObj && right.Type() == object.IntegerObj:
-		return evalIntegerInfixExpression(left, operator, right)
-
-	case operator == "==":
-		log.Println(left, operator, right)
-		return nativeBool(left == right)
-	case operator == "!=":
-		log.Println(left, operator, right)
-		return nativeBool(left != right)
-	}
-	return Null
-}
-
-func evalIntegerInfixExpression(left object.Object, operator string, right object.Object) object.Object {
-	leftVal := left.(*object.Integer).Value
-	rightVal := right.(*object.Integer).Value
-	switch operator {
-	case "+":
-		return &object.Integer{Value: leftVal + rightVal}
-	case "-":
-		return &object.Integer{Value: leftVal - rightVal}
-	case "*":
-		return &object.Integer{Value: leftVal * rightVal}
-	case "/":
-		return &object.Integer{Value: leftVal / rightVal}
-
-	case ">":
-		return nativeBool(leftVal > rightVal)
-	case "<":
-		return nativeBool(leftVal < rightVal)
-	case "==":
-		return nativeBool(leftVal == rightVal)
-	case "!=":
-		return nativeBool(leftVal != rightVal)
-	case ">=":
-		return nativeBool(leftVal >= rightVal)
-	case "<=":
-		return nativeBool(leftVal <= rightVal)
-	}
-
-	return Null
+func isErr(obj object.Object) bool {
+	return obj != nil && obj.Type() == object.ErrObj
 }

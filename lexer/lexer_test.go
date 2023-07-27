@@ -161,7 +161,5 @@ if (5 < 10) {
 				tok.Literal,
 			)
 		}
-
-		t.Log(tok)
 	}
 }

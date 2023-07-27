@@ -11,6 +11,8 @@ const (
 	BoolObj    ObjectType = "bool"
 	StringObj  ObjectType = "string"
 	NullObj    ObjectType = "null"
+	ReturnObj  ObjectType = "return"
+	ErrObj     ObjectType = "error"
 )
 
 type Object interface {
@@ -83,3 +85,35 @@ func (*Null) Type() ObjectType {
 }
 
 var _ Object = (*Null)(nil)
+
+type ReturnValue struct {
+	Value Object
+}
+
+// Inspect implements Object
+func (r *ReturnValue) Inspect() string {
+	return r.Value.Inspect()
+}
+
+// Type implements Object
+func (*ReturnValue) Type() ObjectType {
+	return ReturnObj
+}
+
+var _ Object = (*ReturnValue)(nil)
+
+type Error struct {
+	Message string
+}
+
+// Inspect implements Object
+func (e *Error) Inspect() string {
+	return "Error: " + e.Message
+}
+
+// Type implements Object
+func (*Error) Type() ObjectType {
+	return ErrObj
+}
+
+var _ Object = (*Error)(nil)

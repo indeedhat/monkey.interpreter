@@ -12,7 +12,7 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 
 	stmt.Vaule = p.parseExpression(LowestPresedence)
 
-	if !p.curTokenIs(token.Semicolon) {
+	if p.peekTokenIs(token.Semicolon) {
 		p.nextToken()
 	}
 

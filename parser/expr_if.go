@@ -27,17 +27,17 @@ func (p *Parser) parseIfExpression() ast.Expression {
 
 	// parse the block statment for the if consiquence clause
 	// this will consume all statements until the closing }
-	expr.Consiquence = p.parseBlockStatement()
+	expr.IfBlock = p.parseBlockStatement()
 
-    if p.peekTokenIs(token.Else) {
-        p.nextToken()
+	if p.peekTokenIs(token.Else) {
+		p.nextToken()
 
-        if !p.expectPeek(token.LBrace) {
-            return nil
-        }
+		if !p.expectPeek(token.LBrace) {
+			return nil
+		}
 
-        expr.Alternative = p.parseBlockStatement()
-    }
+		expr.ElseBlock = p.parseBlockStatement()
+	}
 
 	return expr
 }
