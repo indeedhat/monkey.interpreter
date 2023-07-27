@@ -14,7 +14,6 @@ var (
 )
 
 func Eval(node ast.Node) object.Object {
-
 	switch val := node.(type) {
 	case *ast.Program:
 		return evalStatements(val.Statements)
@@ -35,7 +34,7 @@ func Eval(node ast.Node) object.Object {
 		}
 		return evalPrefixExpression(val.Operator, ret)
 	case *ast.InfixExpression:
-		left := Eval(val.Right)
+		left := Eval(val.Left)
 		if isErr(left) {
 			return left
 		}

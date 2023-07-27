@@ -16,6 +16,10 @@ var errTests = []struct {
 		"type mismatch: int + bool",
 	},
 	{
+		"true + 5;",
+		"type mismatch: bool + int",
+	},
+	{
 		"5 + true; 5;",
 		"type mismatch: int + bool",
 	},
