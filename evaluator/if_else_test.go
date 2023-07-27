@@ -17,6 +17,8 @@ var ifElseTests = []struct {
 	{"if (1 > 2) { 10 }", nil},
 	{"if (1 > 2) { 10 } else { 20 }", 20},
 	{"if (1 < 2) { 10 } else { 20 }", 10},
+	{"if (1 > 2) { 10 } else if (false) { 20 } else { 30 }", 30},
+	{"if (1 > 2) { 10 } else if (true) { 20 } else { 30 }", 20},
 }
 
 func TestIfElseExpressions(t *testing.T) {

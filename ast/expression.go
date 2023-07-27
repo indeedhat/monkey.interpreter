@@ -134,7 +134,7 @@ type IfExpression struct {
 	Token     token.Token
 	Condition Expression
 	IfBlock   *BlockStatement
-	ElseBlock *BlockStatement
+	ElseBlock Node
 }
 
 // String implements Expression

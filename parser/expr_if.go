@@ -32,6 +32,13 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if p.peekTokenIs(token.Else) {
 		p.nextToken()
 
+		// handle chained ifs
+		if p.peekTokenIs(token.If) {
+			p.nextToken()
+			expr.ElseBlock = p.parseIfExpression()
+			return expr
+		}
+
 		if !p.expectPeek(token.LBrace) {
 			return nil
 		}
