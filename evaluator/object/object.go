@@ -1,18 +1,22 @@
 package object
 
 import (
+	"bytes"
 	"fmt"
+
+	"github.com/indeedhat/monkey-lang/ast"
 )
 
 type ObjectType string
 
 const (
-	IntegerObj ObjectType = "int"
-	BoolObj    ObjectType = "bool"
-	StringObj  ObjectType = "string"
-	NullObj    ObjectType = "null"
-	ReturnObj  ObjectType = "return"
-	ErrObj     ObjectType = "error"
+	IntegerObj  ObjectType = "int"
+	BoolObj     ObjectType = "bool"
+	StringObj   ObjectType = "string"
+	NullObj     ObjectType = "null"
+	ReturnObj   ObjectType = "return"
+	ErrObj      ObjectType = "error"
+	FunctionObj ObjectType = "function"
 )
 
 type Object interface {
@@ -117,3 +121,26 @@ func (*Error) Type() ObjectType {
 }
 
 var _ Object = (*Error)(nil)
+
+type Function struct {
+	Parameters []*ast.Identifier
+	Body       *ast.BlockStatement
+}
+
+// Inspect implements Object
+func (f *Function) Inspect() string {
+	var out bytes.Buffer
+
+	out.WriteString("fn(")
+	out.WriteString(") ")
+	out.WriteString(f.Body.String())
+
+	return out.String()
+}
+
+// Type implements Object
+func (*Function) Type() ObjectType {
+	return FunctionObj
+}
+
+var _ Object = (*Function)(nil)

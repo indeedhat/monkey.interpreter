@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/indeedhat/monkey-lang/token"
 )
@@ -105,13 +106,13 @@ type BlockStatement struct {
 func (n *BlockStatement) String() string {
 	var buf bytes.Buffer
 
-	buf.WriteString("{ ")
+	buf.WriteString("{\n")
 
 	for _, stmt := range n.Statements {
-		buf.WriteString(stmt.String())
+		buf.WriteString(fmt.Sprintf("    %s\n", stmt.String()))
 	}
 
-	buf.WriteString(" }")
+	buf.WriteString("}")
 
 	return buf.String()
 }

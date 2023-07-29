@@ -5,18 +5,18 @@ import (
 	"github.com/indeedhat/monkey-lang/evaluator/object"
 )
 
-func evalIfExpression(expr *ast.IfExpression) object.Object {
-	condition := Eval(expr.Condition)
+func evalIfExpression(expr *ast.IfExpression, env *object.Environment) object.Object {
+	condition := Eval(expr.Condition, env)
 	if isErr(condition) {
 		return condition
 	}
 
 	if isTruthful(condition) {
-		return Eval(expr.IfBlock)
+		return Eval(expr.IfBlock, env)
 	}
 
 	if expr.ElseBlock != nil {
-		return Eval(expr.ElseBlock)
+		return Eval(expr.ElseBlock, env)
 	}
 
 	return Null

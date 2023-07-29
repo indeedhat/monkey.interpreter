@@ -6,6 +6,7 @@ import (
 	"io"
 
 	"github.com/indeedhat/monkey-lang/evaluator"
+	"github.com/indeedhat/monkey-lang/evaluator/object"
 	"github.com/indeedhat/monkey-lang/lexer"
 	"github.com/indeedhat/monkey-lang/parser"
 )
@@ -14,6 +15,7 @@ const PromptString = "> "
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 
 	for {
 		fmt.Fprintf(out, PromptString)
@@ -38,7 +40,7 @@ func Start(in io.Reader, out io.Writer) {
 			}
 		}
 
-		evald := evaluator.Eval(program)
+		evald := evaluator.Eval(program, env)
 		if evald == nil {
 			io.WriteString(out, "ERROR: falied to eval")
 		} else {

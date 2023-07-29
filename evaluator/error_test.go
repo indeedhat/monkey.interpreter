@@ -50,6 +50,10 @@ return 1;
 `,
 		"unknown operator: bool + bool",
 	},
+	{
+		"nope",
+		"undefined identifier: nope",
+	},
 }
 
 func TestErrorHandling(t *testing.T) {

@@ -222,8 +222,9 @@ func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
 	prog := p.ParseProgram()
+	env := object.NewEnvironment()
 
-	return Eval(prog)
+	return Eval(prog, env)
 }
 
 func testLoggedEval(t *testing.T, input string) object.Object {
@@ -233,6 +234,7 @@ func testLoggedEval(t *testing.T, input string) object.Object {
 	t.Log("parse: ", spew.Sdump(p))
 	prog := p.ParseProgram()
 	t.Log("prog: ", spew.Sdump(prog.Statements))
+	env := object.NewEnvironment()
 
-	return Eval(prog)
+	return Eval(prog, env)
 }
