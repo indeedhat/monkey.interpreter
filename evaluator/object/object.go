@@ -17,6 +17,7 @@ const (
 	ReturnObj   ObjectType = "return"
 	ErrObj      ObjectType = "error"
 	FunctionObj ObjectType = "function"
+	BuiltinObj  ObjectType = "builtin"
 )
 
 type Object interface {
@@ -144,3 +145,7 @@ func (*Function) Type() ObjectType {
 }
 
 var _ Object = (*Function)(nil)
+
+func error(format string, args ...any) *Error {
+	return &Error{Message: fmt.Sprintf(format, args...)}
+}

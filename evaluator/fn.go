@@ -18,32 +18,43 @@ func evalFuncionCall(val *ast.FunctionCallExpression, env *object.Environment) o
 		return ret
 	}
 
-	fn, ok := ret.(*object.Function)
-	if !ok {
-		return error("ret is not a function: %T", ret)
-	}
+	var (
+		args  = make([]object.Object, 0, len(val.Arguments))
+		scope = env.NewScope()
+	)
 
-	if len(val.Arguments) != len(fn.Parameters) {
-		return error("unexpected arg count: expect(%d) found(%d)", len(fn.Parameters), len(val.Arguments))
-	}
-
-	scope := env.NewScope()
-
-	// bind arguments to the funciton scope
-	for i, arg := range val.Arguments {
+	// evaluate arguments
+	for _, arg := range val.Arguments {
 		a := Eval(arg, env)
 		if isErr(a) {
 			return a
 		}
 
-		scope.Set(fn.Parameters[i].String(), a)
+		args = append(args, a)
 	}
 
-	// unwrap return values
-	evald := Eval(fn.Body, scope)
-	if ret, ok := evald.(*object.ReturnValue); ok {
-		return ret.Value
+	// apply function
+	switch fn := ret.(type) {
+	case *object.Function:
+		if len(val.Arguments) != len(fn.Parameters) {
+			return error("unexpected arg count: expect(%d) found(%d)", len(fn.Parameters), len(val.Arguments))
+		}
+		// bind arguments to the funciton scope
+		for i, arg := range args {
+			scope.Set(fn.Parameters[i].String(), arg)
+		}
+
+		// unwrap return values
+		evald := Eval(fn.Body, scope)
+		if ret, ok := evald.(*object.ReturnValue); ok {
+			return ret.Value
+		}
+
+		return evald
+
+	case *object.Builtin:
+		return fn.Fn(args...)
 	}
 
-	return evald
+	return error("not a function: %T", val)
 }

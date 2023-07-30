@@ -52,11 +52,15 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 func evalIdentifier(val *ast.Identifier, env *object.Environment) object.Object {
 	ret, ok := env.Get(val.Value)
-	if !ok {
-		return error("undefined identifier: %s", val.Value)
+	if ok {
+		return ret
 	}
 
-	return ret
+	if b, ok := builtins[val.Value]; ok {
+		return b
+	}
+
+	return error("undefined identifier: %s", val.Value)
 }
 
 func evalLetStatement(val *ast.LetStatement, env *object.Environment) object.Object {

@@ -243,6 +243,10 @@ func testLoggedEval(t *testing.T, input string) object.Object {
 	t.Log("prog: ", spew.Sdump(prog.Statements))
 	env := object.NewEnvironment()
 
+	for _, stmt := range prog.Statements {
+		t.Log(spew.Sdump(stmt))
+	}
+
 	ret := Eval(prog, env)
 
 	if isErr(ret) {
