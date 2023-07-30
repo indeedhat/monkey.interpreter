@@ -187,7 +187,9 @@ func (l *Lexer) readStringLiteral() *string {
 	}
 
 	// skip final "
-	l.readChar()
+	if l.peekChar() == ';' {
+		l.readChar()
+	}
 	// dont include the " on each side in the strings value
 	str := buf.String()[1:]
 	return &str
