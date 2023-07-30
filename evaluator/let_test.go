@@ -15,7 +15,7 @@ var letTests = []struct {
 func TestEvalLetStatements(t *testing.T) {
 	for _, tCase := range letTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evald := testEval(tCase.input)
+			evald := testEval(t, tCase.input)
 			testIntegerObject(t, evald, tCase.value)
 		})
 	}

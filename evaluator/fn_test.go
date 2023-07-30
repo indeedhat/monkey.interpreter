@@ -9,7 +9,7 @@ import (
 
 func TestFunctionObject(t *testing.T) {
 	input := "fn(x) { x + 2; };"
-	evald := testEval(input)
+	evald := testEval(t, input)
 
 	fn, ok := evald.(*object.Function)
 	if !ok {
@@ -40,7 +40,7 @@ var fnCallTests = []struct {
 func TestFunctionCalls(t *testing.T) {
 	for _, tCase := range fnCallTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			testIntegerObject(t, testEval(tCase.input), tCase.expected)
+			testIntegerObject(t, testEval(t, tCase.input), tCase.expected)
 		})
 	}
 }

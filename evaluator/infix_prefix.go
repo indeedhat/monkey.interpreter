@@ -67,6 +67,8 @@ func evalInfixExpression(val *ast.InfixExpression, env *object.Environment) obje
 	switch {
 	case left.Type() == object.IntegerObj && right.Type() == object.IntegerObj:
 		return evalIntegerInfixExpression(left, val.Operator, right)
+	case left.Type() == object.StringObj && right.Type() == object.StringObj:
+		return evalStringInfixExpression(left, val.Operator, right)
 
 	case left.Type() != right.Type():
 		return error("type mismatch: %s %s %s", left.Type(), val.Operator, right.Type())
@@ -108,4 +110,15 @@ func evalIntegerInfixExpression(left object.Object, operator string, right objec
 	}
 
 	return error("unknown operator %s %s %s", left.Type(), operator, right.Type())
+}
+
+func evalStringInfixExpression(left object.Object, operator string, right object.Object) object.Object {
+	if operator != "+" {
+		error("invalid infix for string->string: %s", operator)
+	}
+
+	leftVal := left.(*object.String).Value
+	rightVal := right.(*object.String).Value
+
+	return &object.String{Value: leftVal + rightVal}
 }

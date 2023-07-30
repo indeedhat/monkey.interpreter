@@ -38,7 +38,7 @@ var integerTests = []struct {
 func TestEvalInteger(t *testing.T) {
 	for _, tCase := range integerTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evald := testEval(tCase.input)
+			evald := testEval(t, tCase.input)
 			testIntegerObject(t, evald, tCase.value)
 		})
 	}
@@ -64,7 +64,7 @@ var boolTests = []struct {
 func TestEvalBool(t *testing.T) {
 	for _, tCase := range boolTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evald := testEval(tCase.input)
+			evald := testEval(t, tCase.input)
 			testBoolObject(t, evald, tCase.value)
 		})
 	}
@@ -80,7 +80,7 @@ func testBoolObject(t *testing.T, obj object.Object, expected bool) {
 }
 
 func TestEvalNull(t *testing.T) {
-	evald := testEval("null")
+	evald := testEval(t, "null")
 	_, ok := evald.(*object.Null)
 	if !ok {
 		t.Fatalf("bad object type: expected(Null) found(%T)", evald)
@@ -105,7 +105,7 @@ var bangTests = []struct {
 func TestEvalBang(t *testing.T) {
 	for _, tCase := range bangTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evald := testEval(tCase.input)
+			evald := testEval(t, tCase.input)
 			testBoolObject(t, evald, tCase.value)
 		})
 	}
@@ -142,7 +142,7 @@ var booleanExpressionTests = []struct {
 func TestEvalBoolExpression(t *testing.T) {
 	for _, tCase := range booleanExpressionTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evald := testEval(tCase.input)
+			evald := testEval(t, tCase.input)
 			testBoolObject(t, evald, tCase.value)
 		})
 	}
@@ -155,12 +155,13 @@ var stringTests = []struct {
 	{`"this is a string"`, "this is a string"},
 	{`"this is a string with \"quotes\""`, `this is a string with "quotes"`},
 	{`"this is a string with a \ (backslash)"`, `this is a string with a \ (backslash)`},
+	{`"Hello," + " " + "world!"`, "Hello, world!"},
 }
 
 func TestParseString(t *testing.T) {
 	for _, tCase := range stringTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evld := testEval(tCase.input)
+			evld := testEval(t, tCase.input)
 			testStringObject(t, evld, tCase.value)
 		})
 	}
@@ -202,7 +203,7 @@ var returnTests = []struct {
 func TestReturn(t *testing.T) {
 	for _, tCase := range returnTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evald := testEval(tCase.input)
+			evald := testEval(t, tCase.input)
 
 			switch expected := tCase.value.(type) {
 			case int:
@@ -218,13 +219,19 @@ func TestReturn(t *testing.T) {
 	}
 }
 
-func testEval(input string) object.Object {
+func testEval(t *testing.T, input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
 	prog := p.ParseProgram()
 	env := object.NewEnvironment()
 
-	return Eval(prog, env)
+	ret := Eval(prog, env)
+
+	if isErr(ret) {
+		t.Logf("Error: %s", ret.Inspect())
+	}
+
+	return ret
 }
 
 func testLoggedEval(t *testing.T, input string) object.Object {
@@ -236,5 +243,11 @@ func testLoggedEval(t *testing.T, input string) object.Object {
 	t.Log("prog: ", spew.Sdump(prog.Statements))
 	env := object.NewEnvironment()
 
-	return Eval(prog, env)
+	ret := Eval(prog, env)
+
+	if isErr(ret) {
+		t.Logf("Error: %s", ret.Inspect())
+	}
+
+	return ret
 }

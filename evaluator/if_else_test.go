@@ -24,7 +24,7 @@ var ifElseTests = []struct {
 func TestIfElseExpressions(t *testing.T) {
 	for _, tCase := range ifElseTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evald := testEval(tCase.input)
+			evald := testEval(t, tCase.input)
 
 			switch val := tCase.value.(type) {
 			case int:

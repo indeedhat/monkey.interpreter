@@ -59,7 +59,7 @@ return 1;
 func TestErrorHandling(t *testing.T) {
 	for _, tCase := range errTests {
 		t.Run(tCase.input, func(t *testing.T) {
-			evaluated := testEval(tCase.input)
+			evaluated := testEval(t, tCase.input)
 
 			err, ok := evaluated.(*object.Error)
 			if !ok {

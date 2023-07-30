@@ -4,7 +4,7 @@ Implementation of monkey lang based on [this book](https://interpreterbook.com/)
 
 Some or all of the features i have added may be a later part of the book, dont know, haven't gotten there yet.
 
-> current place 136
+> current place 151
 
 ## Current state of monkey lang (to the eval stage)
 
@@ -61,4 +61,20 @@ if (1 > 5) {
 ```
 return 1;
 null;
+```
+
+## Funcitions/closures
+```
+let add = fn(a, b) {
+    a + b;
+};
+
+let call_twice = fn(f) {
+    f();
+    f();
+};
+
+call_twice(fn() {
+    1 + 2;
+});
 ```
