@@ -48,14 +48,14 @@ func (p *Parser) parseFunctionCallExpression(fn ast.Expression) ast.Expression {
 	return &ast.FunctionCallExpression{
 		Token:     p.curToken,
 		Function:  fn,
-		Arguments: p.parseFuncitonCallArguments(),
+		Arguments: p.parseExpressionList(token.RParen),
 	}
 }
 
-func (p *Parser) parseFuncitonCallArguments() (args []ast.Expression) {
+func (p *Parser) parseExpressionList(closeToken token.TokenType) (args []ast.Expression) {
 	p.nextToken()
 
-	if p.curTokenIs(token.RParen) {
+	if p.curTokenIs(closeToken) {
 		return args
 	}
 
@@ -67,7 +67,7 @@ func (p *Parser) parseFuncitonCallArguments() (args []ast.Expression) {
 		args = append(args, p.parseExpression(LowestPresedence))
 	}
 
-	if !p.expectPeek(token.RParen) {
+	if !p.expectPeek(closeToken) {
 		return nil
 	}
 

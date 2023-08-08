@@ -14,6 +14,7 @@ const (
 	Product
 	Prefix
 	Call
+	Index
 )
 
 // parseExpressionStatement parses an expression into a statement wrapper

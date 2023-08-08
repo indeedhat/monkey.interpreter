@@ -45,6 +45,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalFunctionLiteral(val, env)
 	case *ast.FunctionCallExpression:
 		return evalFuncionCall(val, env)
+	case *ast.ArrayLiteral:
+		return evalArrayLiteral(val, env)
+	case *ast.IndexExpression:
+		return evalIndexExpression(val, env)
 	}
 
 	return error("unknown node: %T", node)

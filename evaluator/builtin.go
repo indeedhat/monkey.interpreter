@@ -1,7 +1,6 @@
 package evaluator
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	"github.com/indeedhat/monkey-lang/evaluator/object"
 )
 
@@ -13,7 +12,6 @@ var builtins = map[string]*object.Builtin{
 }
 
 func builtinLen(args ...object.Object) object.Object {
-	spew.Dump(args)
 	if len(args) != 1 {
 		return error("bad arg count: expect(1) found(%d)", len(args))
 	}

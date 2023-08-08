@@ -19,18 +19,12 @@ func evalFuncionCall(val *ast.FunctionCallExpression, env *object.Environment) o
 	}
 
 	var (
-		args  = make([]object.Object, 0, len(val.Arguments))
 		scope = env.NewScope()
+		args  = evalExpressions(val.Arguments, scope)
 	)
 
-	// evaluate arguments
-	for _, arg := range val.Arguments {
-		a := Eval(arg, env)
-		if isErr(a) {
-			return a
-		}
-
-		args = append(args, a)
+	if isErr(args[0]) {
+		return args[0]
 	}
 
 	// apply function
@@ -57,4 +51,19 @@ func evalFuncionCall(val *ast.FunctionCallExpression, env *object.Environment) o
 	}
 
 	return error("not a function: %T", val)
+}
+
+func evalExpressions(expressions []ast.Expression, env *object.Environment) []object.Object {
+	args := make([]object.Object, 0, len(expressions))
+
+	for _, arg := range expressions {
+		a := Eval(arg, env)
+		if isErr(a) {
+			return []object.Object{a}
+		}
+
+		args = append(args, a)
+	}
+
+	return args
 }

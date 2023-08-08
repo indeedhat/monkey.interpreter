@@ -24,6 +24,7 @@ var operatorPresedence = map[token.TokenType]int{
 	token.Slash:          Product,
 	token.Asterisk:       Product,
 	token.LParen:         Call,
+	token.LBracket:       Index,
 }
 
 type Parser struct {
@@ -56,6 +57,7 @@ func New(lex *lexer.Lexer) *Parser {
 	p.registerPrefixParser(token.If, p.parseIfExpression)
 	p.registerPrefixParser(token.Function, p.parseFunctionLiteral)
 	p.registerPrefixParser(token.String, p.parseStringLiteral)
+	p.registerPrefixParser(token.LBracket, p.parseArrayLiteral)
 
 	p.registerInfixParser(token.GreaterOrEqual, p.parseInfixExpression)
 	p.registerInfixParser(token.LessOrEqual, p.parseInfixExpression)
@@ -68,6 +70,7 @@ func New(lex *lexer.Lexer) *Parser {
 	p.registerInfixParser(token.Slash, p.parseInfixExpression)
 	p.registerInfixParser(token.Asterisk, p.parseInfixExpression)
 	p.registerInfixParser(token.LParen, p.parseFunctionCallExpression)
+	p.registerInfixParser(token.LBracket, p.parseIndexExpression)
 
 	// populate cur/next token fields
 	p.nextToken()

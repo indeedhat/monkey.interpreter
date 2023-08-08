@@ -18,6 +18,7 @@ const (
 	ErrObj      ObjectType = "error"
 	FunctionObj ObjectType = "function"
 	BuiltinObj  ObjectType = "builtin"
+	ArrayObj    ObjectType = "array"
 )
 
 type Object interface {
@@ -130,13 +131,13 @@ type Function struct {
 
 // Inspect implements Object
 func (f *Function) Inspect() string {
-	var out bytes.Buffer
+	var buf bytes.Buffer
 
-	out.WriteString("fn(")
-	out.WriteString(") ")
-	out.WriteString(f.Body.String())
+	buf.WriteString("fn(")
+	buf.WriteString(") ")
+	buf.WriteString(f.Body.String())
 
-	return out.String()
+	return buf.String()
 }
 
 // Type implements Object
@@ -145,6 +146,36 @@ func (*Function) Type() ObjectType {
 }
 
 var _ Object = (*Function)(nil)
+
+type Array struct {
+	Elements []Object
+}
+
+// Inspect implements Object
+func (a *Array) Inspect() string {
+	var buf bytes.Buffer
+
+	buf.WriteString("[")
+
+	for i, elem := range a.Elements {
+		if i > 0 {
+			buf.WriteString(", ")
+		}
+
+		buf.WriteString(elem.Inspect())
+	}
+
+	buf.WriteString("] ")
+
+	return buf.String()
+}
+
+// Type implements Object
+func (*Array) Type() ObjectType {
+	return ArrayObj
+}
+
+var _ Object = (*Array)(nil)
 
 func error(format string, args ...any) *Error {
 	return &Error{Message: fmt.Sprintf(format, args...)}

@@ -100,11 +100,12 @@ var nextTokenTests = []struct {
 	{token.String, `this is a string with "quotes"`},
 	{token.String, `this is a string with a \ (backslash)`},
 
-	// {token.Ident, "data"},
-	// {token.LBracket, "["},
-	// {token.Int, "0"},
-	// {token.RBracket, "]"},
-	// {token.Semicolon, ";"},
+	{token.LBracket, "["},
+	{token.Int, "0"},
+	{token.Comma, ","},
+	{token.Int, "1"},
+	{token.RBracket, "]"},
+	{token.Semicolon, ";"},
 
 	{token.Eof, ""},
 }
@@ -136,18 +137,21 @@ if (5 < 10) {
 "this is a string";
 "this is a string with \"quotes\"";
 "this is a string with a \ (backslash)";
+
+[0, 1];
 `
 	//
 	//data[0];
 	//`
 
+    // TODO: this test is broken for strings, if they have a ; then it reads them as ; tokens
 	lex := New(input)
 
 	for i, tst := range nextTokenTests {
 		tok := lex.NextToken()
 
 		if tok.Type != tst.expectedType {
-			t.Fatalf("tests[%d] - wrong token type. expected(%q) found(%q)",
+			t.Errorf("tests[%d] - wrong token type. expected(%q) found(%q)",
 				i,
 				tst.expectedType,
 				tok.Type,

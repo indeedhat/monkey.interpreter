@@ -46,10 +46,10 @@ func (l *Lexer) NextToken() token.Token {
 		return l.token(token.LBrace, string(l.char))
 	case '}':
 		return l.token(token.RBrace, string(l.char))
-	// case '[':
-	// 	return l.token(token.LBracket, string(l.char))
-	// case ']':
-	// 	return l.token(token.RBracket, string(l.char))
+	case '[':
+		return l.token(token.LBracket, string(l.char))
+	case ']':
+		return l.token(token.RBracket, string(l.char))
 	case '+':
 		return l.token(token.Plus, string(l.char))
 	case '-':
@@ -187,9 +187,10 @@ func (l *Lexer) readStringLiteral() *string {
 	}
 
 	// skip final "
-	if l.peekChar() == ';' {
+	if l.peekChar() == '"' {
 		l.readChar()
 	}
+
 	// dont include the " on each side in the strings value
 	str := buf.String()[1:]
 	return &str

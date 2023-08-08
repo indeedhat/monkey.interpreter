@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/indeedhat/monkey-lang/token"
@@ -66,7 +67,7 @@ type StringLiteral struct {
 
 // String implements Expression
 func (n *StringLiteral) String() string {
-	return n.Token.Literal
+	return `"` + n.Token.Literal + `"`
 }
 
 // TokenLiteral implements Expression
@@ -255,3 +256,59 @@ func (*NullLiteral) expressionNode() {
 }
 
 var _ Expression = (*NullLiteral)(nil)
+
+type ArrayLiteral struct {
+	Token    token.Token
+	Elements []Expression
+}
+
+// String implements Expression
+func (a *ArrayLiteral) String() string {
+	var buf bytes.Buffer
+	buf.WriteString("[")
+
+	for i, elem := range a.Elements {
+		if i > 0 {
+			buf.WriteString(", ")
+		}
+
+		buf.WriteString(elem.String())
+	}
+
+	buf.WriteString("]")
+
+	return buf.String()
+}
+
+// TokenLiteral implements Expression
+func (a *ArrayLiteral) TokenLiteral() string {
+	return a.Token.Literal
+}
+
+// expressionNode implements Expression
+func (*ArrayLiteral) expressionNode() {
+}
+
+var _ Expression = (*ArrayLiteral)(nil)
+
+type IndexExpression struct {
+	Token   token.Token
+	Subject Expression
+	Index   Expression
+}
+
+// String implements Expression
+func (i *IndexExpression) String() string {
+	return fmt.Sprintf("(%s[%s])", i.Subject.String(), i.Index.String())
+}
+
+// TokenLiteral implements Expression
+func (i *IndexExpression) TokenLiteral() string {
+	return i.Token.Literal
+}
+
+// expressionNode implements Expression
+func (*IndexExpression) expressionNode() {
+}
+
+var _ Expression = (*IndexExpression)(nil)
