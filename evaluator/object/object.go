@@ -19,6 +19,7 @@ const (
 	FunctionObj ObjectType = "function"
 	BuiltinObj  ObjectType = "builtin"
 	ArrayObj    ObjectType = "array"
+	VoidObj     ObjectType = "void"
 )
 
 type Object interface {
@@ -91,6 +92,20 @@ func (*Null) Type() ObjectType {
 }
 
 var _ Object = (*Null)(nil)
+
+type Void struct{}
+
+// Inspect implements Object
+func (*Void) Inspect() string {
+	return ""
+}
+
+// Type implements Object
+func (*Void) Type() ObjectType {
+	return VoidObj
+}
+
+var _ Object = (*Void)(nil)
 
 type ReturnValue struct {
 	Value Object

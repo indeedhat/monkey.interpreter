@@ -11,6 +11,7 @@ var (
 	True  = &object.Boolean{Value: true}
 	False = &object.Boolean{Value: false}
 	Null  = &object.Null{}
+	Void  = &object.Void{}
 )
 
 func Eval(node ast.Node, env *object.Environment) object.Object {
