@@ -8,6 +8,17 @@ Some or all of the features i have added may be a later part of the book, dont k
 
 ## Current state of monkey lang (to the eval stage)
 
+### Comments
+```
+// single line comments
+/*
+    block comments
+*/
+
+/* closing block comments is optional
+let commented = "out code";
+```
+
 ### String literals
 ```
 "This is a string";
