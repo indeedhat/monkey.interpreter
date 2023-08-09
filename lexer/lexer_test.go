@@ -96,9 +96,13 @@ var nextTokenTests = []struct {
 	{token.GreaterOrEqual, ">="},
 	{token.Int, "10"},
 	{token.Semicolon, ";"},
+
 	{token.String, "this is a string"},
+	{token.Semicolon, ";"},
 	{token.String, `this is a string with "quotes"`},
+	{token.Semicolon, ";"},
 	{token.String, `this is a string with a \ (backslash)`},
+	{token.Semicolon, ";"},
 
 	{token.LBracket, "["},
 	{token.Int, "0"},
@@ -144,7 +148,7 @@ if (5 < 10) {
 	//data[0];
 	//`
 
-    // TODO: this test is broken for strings, if they have a ; then it reads them as ; tokens
+	// TODO: this test is broken for strings, if they have a ; then it reads them as ; tokenres
 	lex := New(input)
 
 	for i, tst := range nextTokenTests {
