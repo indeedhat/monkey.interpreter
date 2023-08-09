@@ -51,8 +51,8 @@ var nextTokenTests = []struct {
 
 	{token.Bang, "!"},
 	{token.Minus, "-"},
-	{token.Slash, "/"},
 	{token.Asterisk, "*"},
+	{token.Slash, "/"},
 	{token.Int, "5"},
 	{token.Semicolon, ";"},
 	{token.Int, "5"},
@@ -111,6 +111,12 @@ var nextTokenTests = []struct {
 	{token.RBracket, "]"},
 	{token.Semicolon, ";"},
 
+	// comments
+	{token.Comment, "// line comment"},
+	{token.Comment, "/* block comment */"},
+	{token.Comment, "/* multi line\nbock comment */"},
+	{token.Comment, "/* unclosed\nblock comment"},
+
 	{token.Eof, ""},
 }
 
@@ -124,7 +130,7 @@ x + y;
 
 let result = add(five, ten);
 
-!-/*5;
+!-*/5;
 5 < 10 > 5;
 
 if (5 < 10) {
@@ -143,6 +149,13 @@ if (5 < 10) {
 "this is a string with a \ (backslash)";
 
 [0, 1];
+
+// line comment
+/* block comment */
+/* multi line
+bock comment */
+/* unclosed
+block comment
 `
 	//
 	//data[0];

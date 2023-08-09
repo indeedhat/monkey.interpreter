@@ -128,6 +128,8 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseLetStatement()
 	case token.Return:
 		return p.parseReturnStatement()
+	case token.Comment:
+		return nil
 	default:
 		return p.parseExpressionStatement()
 	}

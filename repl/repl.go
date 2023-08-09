@@ -41,12 +41,9 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		evald := evaluator.Eval(program, env)
-		if evald == nil {
-			io.WriteString(out, "ERROR: falied to eval")
-		} else {
+		if evald != nil {
 			io.WriteString(out, evald.Inspect())
+			io.WriteString(out, "\n")
 		}
-
-		io.WriteString(out, "\n")
 	}
 }

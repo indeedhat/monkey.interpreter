@@ -67,6 +67,12 @@ func (l *Lexer) NextToken() token.Token {
 	case '*':
 		return l.token(token.Asterisk, string(l.char))
 	case '/':
+		if l.peekChar() == '/' {
+			return l.token(token.Comment, l.readLineComment())
+		}
+		if l.peekChar() == '*' {
+			return l.token(token.Comment, l.readBlockComment())
+		}
 		return l.token(token.Slash, string(l.char))
 	case '<':
 		if l.peekChar() == '=' {
@@ -194,6 +200,52 @@ func (l *Lexer) readStringLiteral() *string {
 	// dont include the " on each side in the strings value
 	str := buf.String()[1:]
 	return &str
+}
+
+func (l *Lexer) readLineComment() string {
+	var buf bytes.Buffer
+
+	for {
+		char := l.input[l.pos]
+		peekChar := l.peekChar()
+
+		if peekChar == 0 {
+			break
+		} else if char == '\r' && peekChar != '\n' {
+			break
+		} else if char == '\n' {
+			break
+		}
+		buf.WriteString(string(char))
+
+		l.readChar()
+	}
+
+	return buf.String()
+}
+
+func (l *Lexer) readBlockComment() string {
+	var buf bytes.Buffer
+
+	for {
+		char := l.input[l.pos]
+		peekChar := l.peekChar()
+		if peekChar == 0 {
+			break
+		}
+
+		buf.WriteString(string(char))
+
+		if char == '*' && peekChar == '/' {
+			l.readChar()
+			buf.WriteString("/")
+			break
+		}
+
+		l.readChar()
+	}
+
+	return buf.String()
 }
 
 // readNumber reads a numeric value from the input string

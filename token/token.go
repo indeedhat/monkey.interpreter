@@ -47,6 +47,7 @@ const (
 	True     TokenType = "TRUE"
 	False    TokenType = "FALSE"
 	Null     TokenType = "NULL"
+	Comment  TokenType = "COMMENT"
 )
 
 type Token struct {
