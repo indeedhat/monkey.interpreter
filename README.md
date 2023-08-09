@@ -32,6 +32,16 @@ false;
 -1;
 ```
 
+### arrays
+```
+let a = [1];
+let a = append(a, 2);
+let b = append(a, 3, 4, 5);
+
+len(a) == 2;
+len(b) == 5;
+```
+
 ### infix operators
 ```
 true == true;
@@ -44,6 +54,7 @@ true != false;
 1 - 1;
 1 * 2;
 4 / 2;
+"Hello," + " " + "World!"
 ```
 
 ### if/else statements
@@ -77,4 +88,14 @@ let call_twice = fn(f) {
 call_twice(fn() {
     1 + 2;
 });
+```
+
+### Print
+```
+print("print me to the screen");
+
+let a = [0, 1, 2];
+printf("the array has %d elements", len(a));
+
+let str
 ```
